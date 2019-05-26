@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Lazy loading images</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div class="container">
+		<div class="wide">Header</div>
+		<div class="left-wide">
+			<img src="images/small/1-small.jpg" data-src="1-large.jpg" class="lazy-load">
+		</div>
+		<div class="right-narrow">
+			Content right
+		</div>
+		<div class="one-third first-third">One third</div>
+		<div class="one-third">One third</div>
+		<div class="one-third last-third">One third</div>
+		<div class="left-narrow">Content left</div>
+		<div class="right-wide">
+			<img src="images/small/2-small.jpg" data-src="2-large.jpg" class="lazy-load">
+		</div>
+		<div class="one-third first-third">Content one third</div>
+		<div class="one-third">Content one third</div>
+		<div class="one-third last-third">Content one third</div>
+		<div class="left-wide">
+			<img src="images/small/3-small.jpg" data-src="3-large.jpg" class="lazy-load">
+		</div>
+		<div class="right-narrow">
+			Content right
+		</div>
+		<div class="one-third first-third">Content one third</div>
+		<div class="one-third">Content one third</div>
+		<div class="one-third last-third">Content one third</div>
+		<div class="wide">Footer</div>
+	</div>
+
+	<script type="text/javascript">
+		var load = window.addEventListener("load", function() {
+			// Load images in the visible area
+			loadImages();
+
+			// Remove the load event listener
+			window.removeEventListener("load", load);
+		});
+
+		var resize = window.addEventListener("resize", function() {
+			// Load images in the visible area
+			loadImages();
+		});
+
+		var scroll = window.addEventListener("scroll", function() {
+			// Load images in the visible area
+			loadImages();
+		});
+
+		function loadImages() {
+			// Select all images with the ".lazy-load" class
+			var images = document.querySelectorAll(".lazy-load");
+
+			// If all images are loaded, stop listening
+			if (images.length == 0) {
+				window.removeEventListener("resize", resize);
+				window.removeEventListener("scroll", scroll);
+			}
+
+			// Check each image for visibility
+			for (var i = 0; i < images.length; i++) {
+				var imageBounds = images[i].getBoundingClientRect();
+
+				// Check if image is visible
+				if (imageBounds.top >= 0 &&
+					imageBounds.left >=0 &&
+					imageBounds.bottom <= window.innerHeight &&
+					imageBounds.right <= window.innerWidth) {
+					// Load the image
+					images[i].src = "images/fullsize/" + images[i].dataset.src;
+					// Remove lazy-load class
+					images[i].classList.remove("lazy-load");
+				}
+			}
+		}
+	</script>
+</body>
+</html>
